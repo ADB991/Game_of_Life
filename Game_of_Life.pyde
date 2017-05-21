@@ -1,22 +1,23 @@
-from boards import Board
+from boards import InteractiveBoard
 
 
 colours = [(0,)*3,(256,)*3]
-i = 0
 
 def setup():
     size(600,600)
     global current
-    current = Board('random')
+    current = InteractiveBoard('random')
     print(current)
     
     
 def draw():
     frameRate( 80*(1 + mouseY / 60.))
+    current.pause_unpause()
     current.show()
     current.update()
 
 def mouseClicked():
+    current.switch_cell()
     current.print_cell_state()
 
 

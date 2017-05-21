@@ -73,4 +73,27 @@ class Board():
         cell = self.board[mouseCoords()]
         alive = self.alive_neighbours(cell)
         print( str(cell) + ' with {} alive neighbours.'.format(alive) )
-  
+
+class InteractiveBoard(Board):
+    ''' Move the mouse to the left side
+        to pause the simulation
+        and to the right side to start it.
+        
+        Click on a cell to add or kill it.
+    '''
+    
+    def __init__(self, init='blank'):
+        self.paused = True
+        Board.__init__(self, init)
+        
+    def pause_unpause(self):
+        if self.paused and mouseCoords()[0] >= 60-1:
+            self.paused = False
+        if not self.paused and mouseCoords()[0] <= 0:
+            self.paused = True
+            
+    def update(self):
+        if not self.paused: Board.update(self)
+        
+    def switch_cell(self):
+        self.board[mouseCoords()].switch()  
