@@ -1,3 +1,9 @@
+# TODO: MAKE IT DYNAMICALLY EASY TO MAKE A BOARD OF DIFFERENT SIZES
+# Consider adding interactivity
+# do some good super() heredity
+# Refactor both board and cell to make it possible to add tracker cells.
+
+
 # The rules of the Game of Life:
 rules = { 'birth' : (3,), 'death' : (0,1,4,5,6,7,8) }
 # If a cell is dead and has exactly three alive neighbours,
@@ -11,7 +17,6 @@ class Cell():
     ''' Represents the cells in the Game of Life, and contains the rules of the game.
     '''
     size = 10
-    grid_length = 60
     
     def __init__(self, x, y, alive=False):
         self.x, self.y = x, y
@@ -23,25 +28,16 @@ class Cell():
     def __str__(self):
         state = 'Alive' if self.alive else 'Dead'
         return state + ' cell at ' + str((self.x, self.y))
-                                             
+                                     
     def show(self):
         if self.alive : fill(0)
         else : fill(255)
         size = Cell.size
         rect(self.x*size, self.y*size, size, size)
-        
-    def neighbours(self):
-        ''' Calculate the coords of the 8 neighbouring cells 
-            assuming toroidal grid.
-        '''
-        g = Cell.grid_length - 1
-        result =  [ ( (self.x+i)%g, (self.y+j)%g )
-                     for i in (-1,0,1) for j in (-1,0,1)
-                     if i or j ]
-        return result
     
     def death(self) : self.alive = False
     def birth(self) : self.alive = True
+    def switch(self) : self.alive = not self.alive
     def keep(self) : pass
     
     def action(self, alive_neighbours):
@@ -55,4 +51,6 @@ class Cell():
             return self.birth
         else :
             return self.keep
+    
+        
         
