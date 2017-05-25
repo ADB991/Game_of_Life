@@ -13,8 +13,10 @@ class Board():
     '''
     
     def __init__(self, init='blank'):
+        self.x_cells, self.y_cells = width // 10, height // 10
         self.board = { (x,y) : Cell(x,y) 
-                      for x in range(60) for y in range(60) }
+                      for x in range(self.x_cells)
+                      for y in range(self.y_cells) }
         if init=='blank': pass
         elif init == 'random':
             # random.seed(1) # activate for reproducibility
@@ -63,8 +65,8 @@ class Board():
     def neighbours(self, cell):
         ''' Calculate the neighbouring cells coords using toroidal coords
         '''
-        g = grid_length - 1
-        result =  [ ( (cell.x+i)%g, (cell.y+j)%g )
+        w, h = self.x_cells - 1, self.y_cells-1
+        result =  [ ( (cell.x+i)%w, (cell.y+j)%h )
                      for i in (-1,0,1) for j in (-1,0,1)
                      if i or j ]
         return result
@@ -87,7 +89,7 @@ class InteractiveBoard(Board):
         Board.__init__(self, init)
         
     def pause_unpause(self):
-        if self.paused and mouseCoords()[0] >= 60-1:
+        if self.paused and mouseCoords()[0] >= self.x_cells-1:
             self.paused = False
         if not self.paused and mouseCoords()[0] <= 0:
             self.paused = True

@@ -1,4 +1,3 @@
-# TODO: MAKE IT DYNAMICALLY EASY TO MAKE A BOARD OF DIFFERENT SIZES
 # Consider adding interactivity
 # do some good super() heredity
 # Refactor both board and cell to make it possible to add tracker cells.
