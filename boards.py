@@ -5,8 +5,6 @@ from cells import Cell
 def mouseCoords():
     return (mouseX // 10, mouseY // 10)
 
-grid_length = 60
-
 class Board():
     ''' Keeps track of cells of a game.
         Contains relevant methods and can be initialised in various ways.
