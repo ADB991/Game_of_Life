@@ -12,10 +12,11 @@ rules = { 'birth' : (3,), 'death' : (0,1,4,5,6,7,8) }
 # Change the rules of the game to have different life.
 
 
-class Cell():
+class Cell(object):
     ''' Represents the cells in the Game of Life, and contains the rules of the game.
     '''
     size = 10
+    colour = { 'alive' : (0,)*3, 'dead' : (255,)*3 } 
     
     def __init__(self, x, y, alive=False):
         self.x, self.y = x, y
@@ -29,10 +30,14 @@ class Cell():
         return state + ' cell at ' + str((self.x, self.y))
                                      
     def show(self):
-        if self.alive : fill(0)
-        else : fill(255)
+        fill(*self.choose_colour())
         size = Cell.size
         rect(self.x*size, self.y*size, size, size)
+    
+    def choose_colour(self):
+        colour_dic = self.__class__.colour
+        if self.alive : return colour_dic['alive']
+        else : return colour_dic['dead']
     
     def death(self) : self.alive = False
     def birth(self) : self.alive = True
@@ -51,5 +56,8 @@ class Cell():
         else :
             return self.keep
     
-        
-        
+class RedCell(Cell):
+    ''' Same as normal cell, but red'''
+
+    colour = { 'alive' : (255,0,0), 'dead' : (255,)*3 } 
+    

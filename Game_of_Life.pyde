@@ -1,4 +1,4 @@
-from boards import InteractiveBoard
+import boards
 
 
 colours = [(0,)*3,(256,)*3]
@@ -6,7 +6,7 @@ colours = [(0,)*3,(256,)*3]
 def setup():
     size(600, 600)
     global current
-    current = InteractiveBoard('random')
+    current = boards.RedInteractiveBoard('random')
     print(current)
     
     
