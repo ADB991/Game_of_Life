@@ -105,3 +105,50 @@ class InteractiveBoard(Board):
 class RedInteractiveBoard(InteractiveBoard):
     def new_cell(self, x, y):
         return cells.RedCell(x,y)
+    
+class TrackerBoard(InteractiveBoard):
+    ''' Insert tracker cells by right-clicking,
+        see their progeny live and die
+    '''
+    
+    
+    def new_cell(self, x, y):
+        return cells.Tracker(x,y)
+    
+    def switch_cell(self):
+        cell = self.board[mouseCoords()]
+        if mouseButton == RIGHT:
+            if cell.alive : cell.switch_tracker()
+            else : cell.tracker_birth()
+        else:
+            cell.switch()
+
+    def tracker_neighbour(self, cell):
+        ''' Returns true if one of the neighbouring cells
+            is an alive tracker
+        '''
+        neighbours_coords = self.neighbours(cell) 
+        neighbours_list = [ self.board[coords] for coords in neighbours_coords ]
+        for neighbour_cell in neighbours_list:
+            if neighbour_cell.tracker :
+                return True
+        else:
+            return False
+        
+    def determine_action(self, cell):
+        ''' Gets the method using the normal logic,
+            then if the cell has a neighbour tracker,
+            birth is replaced with tracker birth
+        '''
+        candidate = super(TrackerBoard, self).determine_action(cell)
+        if candidate == cell.birth:
+            if self.tracker_neighbour(cell):
+                candidate = cell.tracker_birth
+        return candidate
+
+    def print_cell_state(self):
+        cell = self.board[mouseCoords()]
+        alive = self.alive_neighbours(cell)
+        tracker = self.tracker_neighbour(cell)
+        print( str(cell) + ' with {} alive neighbours.'.format(alive) )  
+        if tracker : print('TRACKER') 
