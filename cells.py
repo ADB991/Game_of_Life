@@ -56,10 +56,39 @@ class Cell(object):
         else :
             return self.keep
 
-class RedCell(Cell):
-    ''' Same as normal cell, but red'''
 
-    colour = { 'alive' : (255,0,0), 'dead' : (255,)*3 } 
+class ColourCell(Cell):
+    ''' A cell class with a different colour data type
+        to make it easier to have colour mechanics.
+    '''
+    
+    # change this to make the colour revert every time the cell dies
+    reset_colour = False
+    default_colour = (0,)*3
+    dead_colour = (255,)*3
+    
+    def __init__(self, x, y, alive = False, alive_colour = None):
+        super(ColourCell, self).__init__(x,y,alive)
+        if alive_colour is not None:
+            self.colour = alive_colour
+        else: self.colour = type(self).default_colour
+        
+    def choose_colour(self):
+        if self.alive : return self.colour
+        else: return type(self).dead_colour
+        
+    def birth(self, colour=None):
+        self.alive = True
+        if colour is not None:
+            self.colour = colour
+            
+    def death(self) :
+        self.alive = False
+        if type(self).reset_colour:
+            self.colour = type(self).default_colour
+        
+    def set_colour(self, colour):
+        if self.alive : self.colour = colour
 
 
 class Tracker(Cell):

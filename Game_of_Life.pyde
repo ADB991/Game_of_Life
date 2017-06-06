@@ -6,7 +6,7 @@ colours = [(0,)*3,(256,)*3]
 def setup():
     size(600, 600)
     global current
-    current = boards.TrackerBoard('random')
+    current = boards.ColourBoard('random')
     current.show(True)
     print(current)
     
