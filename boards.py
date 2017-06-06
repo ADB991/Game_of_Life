@@ -6,7 +6,7 @@ import cells
 def mouseCoords():
     return (mouseX // 10, mouseY // 10)
 
-class Board(cells.Cell, object):
+class Board(object):
     ''' Keeps track of cells of a game.
         Contains relevant methods and can be initialised in various ways.
     '''
@@ -114,11 +114,10 @@ class InteractiveBoard(Board):
 class RedInteractiveBoard(InteractiveBoard):
     def new_cell(self, x, y):
         return cells.ColourCell(x,y,alive_colour=(255,0,0))
-
     
-class TrackerBoard(InteractiveBoard):
+class TrackerBoard(ColourBoard):
     ''' Insert tracker cells by right-clicking,
-        see their progeny live and die
+        see their progeny live and die.
     '''
     
     random.seed(1)
@@ -134,35 +133,23 @@ class TrackerBoard(InteractiveBoard):
         else:
             cell.switch()
         cell.show()
+    
+    def determine_colour(self, cell):
+        if self.tracker_neighbour(cell):
+            return type(cell).tracker_colour
+        else: return None
 
     def tracker_neighbour(self, cell):
         ''' Returns true if one of the neighbouring cells
             is an alive tracker
         '''
-        for neighbour_cell in self.neighbours_list(cell):
-            if neighbour_cell.tracker :
+        for cell in self.neighbours_list(cell):
+            if cell.colour == type(cell).tracker_colour :
                 return True
         else:
             return False
-        
-    def determine_action(self, cell):
-        ''' Gets the method using the normal logic,
-            then if the cell has a neighbour tracker,
-            birth is replaced with tracker birth
-        '''
-        candidate = super(TrackerBoard, self).determine_action(cell)
-        if candidate == cell.birth:
-            if self.tracker_neighbour(cell):
-                candidate = cell.tracker_birth
-        return candidate
 
-    def print_cell_state(self):
-        cell = self.board[mouseCoords()]
-        alive = self.alive_neighbours(cell)
-        tracker = self.tracker_neighbour(cell)
-        print( str(cell) + ' with {} alive neighbours.'.format(alive) )  
-        if tracker : print('TRACKER')
-        
+
 class ColourBoard(InteractiveBoard):
     ''' A class with an added colour habdling routine.
     '''

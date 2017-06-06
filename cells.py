@@ -91,38 +91,25 @@ class ColourCell(Cell):
         if self.alive : self.colour = colour
 
 
-class Tracker(Cell):
+class Tracker(ColourCell):
     ''' This cell can be in 3 states: alive, dead and tracker.
         The tracker cell is of a different colour, and any cell,
         born in its neighbourhood will also be a tracker
     '''
     
-    colour = { 'alive' : (0,)*3, 'dead' : (255,)*3,
-              'tracker' : (0,0,255) }
+    reset_colour = True
+    tracker_colour = (0,0,255)
     
     def __init__(self, x, y, alive=False, tracker=False):
         super(Tracker,self).__init__(x, y, alive)
-        self.tracker = tracker
+        if tracker : self.colour = type(self).tracker_colour
         
-    def choose_colour(self):
-        colour_dic = self.__class__.colour
-        if self.alive : 
-            if self.tracker : return colour_dic['tracker']
-            else : return colour_dic['alive'] 
-        else : return colour_dic['dead']
-        
-    def death(self) :
-        self.alive = False
-        self.tracker = False
-    
-    def switch(self) : 
-        self.alive = not self.alive
-        if not self.alive : 
-            self.tracker = False
-    
     def tracker_birth(self):
-        self.birth()
-        self.tracker = True
+        self.birth(type(self).tracker_colour)
     
     def switch_tracker(self):
-        self.tracker = not self.tracker
+        tracker_col = type(self).tracker_colour
+        if not self.colour == tracker_col :
+            self.colour = tracker_col
+        else:
+            self.colour = type(self).default_colour
