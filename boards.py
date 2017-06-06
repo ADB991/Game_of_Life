@@ -111,7 +111,37 @@ class InteractiveBoard(Board):
         self.board[mouseCoords()].switch()
 
 
-class RedInteractiveBoard(InteractiveBoard):
+class ColourBoard(InteractiveBoard):
+    ''' A class with an added colour habdling routine.
+    '''
+    
+    def __init__(self, init='random'):
+        super(ColourBoard, self).__init__(init)
+
+    def new_cell(self,x,y):
+        col = tuple((random.randint(0,255) for i in range(3) ))
+        return cells.ColourCell(x,y,alive_colour=col)
+    
+    def determine_action(self, cell):
+        ''' Performs the logic of GoL, then calls a 
+            determine_colour method before returning a
+            cell method which could potentially change the colour
+            of the cell
+        '''
+        candidate = super(ColourBoard, self).determine_action(cell)
+        if candidate == cell.birth:
+            colour = self.determine_colour(cell)
+            candidate = lambda : cell.birth(colour=colour) 
+        return candidate
+    
+    def determine_colour(self, cell):
+        ''' This method determines the colour of newborn cells,
+            intentionally left blank in this class
+        '''
+        return None
+
+
+class RedInteractiveBoard(ColourBoard):
     def new_cell(self, x, y):
         return cells.ColourCell(x,y,alive_colour=(255,0,0))
     
@@ -148,33 +178,3 @@ class TrackerBoard(ColourBoard):
                 return True
         else:
             return False
-
-
-class ColourBoard(InteractiveBoard):
-    ''' A class with an added colour habdling routine.
-    '''
-    
-    def __init__(self, init='random'):
-        super(ColourBoard, self).__init__(init)
-
-    def new_cell(self,x,y):
-        col = tuple((random.randint(0,255) for i in range(3) ))
-        return cells.ColourCell(x,y,alive_colour=col)
-    
-    def determine_action(self, cell):
-        ''' Performs the logic of GoL, then calls a 
-            determine_colour method before returning a
-            cell method which could potentially change the colour
-            of the cell
-        '''
-        candidate = super(ColourBoard, self).determine_action(cell)
-        if candidate == cell.birth:
-            colour = self.determine_colour(cell)
-            candidate = lambda : cell.birth(colour=colour) 
-        return candidate
-    
-    def determine_colour(self, cell):
-        ''' This method determines the colour of newborn cells,
-            intentionally left blank in this class
-        '''
-        return None
