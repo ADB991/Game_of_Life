@@ -41,7 +41,7 @@ class Cell(object):
     
     def death(self) : self.alive = False
     def birth(self) : self.alive = True
-    def switch(self) : self.alive = not self.alive
+    def switch(self) : self.death() if self.alive else self.birth()
     def keep(self) : pass
     
     def action(self, alive_neighbours):
@@ -55,11 +55,12 @@ class Cell(object):
             return self.birth
         else :
             return self.keep
-    
+
 class RedCell(Cell):
     ''' Same as normal cell, but red'''
 
     colour = { 'alive' : (255,0,0), 'dead' : (255,)*3 } 
+
 
 class Tracker(Cell):
     ''' This cell can be in 3 states: alive, dead and tracker.
@@ -96,4 +97,3 @@ class Tracker(Cell):
     
     def switch_tracker(self):
         self.tracker = not self.tracker
-    

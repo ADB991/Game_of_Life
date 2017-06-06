@@ -7,6 +7,7 @@ def setup():
     size(600, 600)
     global current
     current = boards.TrackerBoard('random')
+    current.show(True)
     print(current)
     
     

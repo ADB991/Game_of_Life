@@ -1,4 +1,5 @@
 import random
+import math
 
 import cells
 
@@ -18,7 +19,7 @@ class Board(cells.Cell, object):
         if init=='blank': pass
         elif init == 'random':
             # random.seed(1) # activate for reproducibility
-            for cell in self.board.values():
+            for cell in self.cells:
                 if random.random() > 0.5 : cell.birth()
     
     def new_cell(self, x, y):
@@ -34,7 +35,7 @@ class Board(cells.Cell, object):
         return 'Game of Life board with {}% cells alive'.format(alive_cells/num_cells*100)
     
     def show(self):
-        for each in self.board.values(): each.show()
+        for each in self.cells: each.show()
     
     def update(self):
         actions = self.get_actions_list()
@@ -45,7 +46,7 @@ class Board(cells.Cell, object):
             that need to be called to update it.
         '''
         actions = [ self.determine_action(cell)
-                    for cell in self.board.values() ]
+                    for cell in self.cells ]
         return actions
     
     def determine_action(self, cell):
@@ -59,9 +60,12 @@ class Board(cells.Cell, object):
     def alive_neighbours(self, cell):
         ''' Returns the number of alive neighbours of a given cell
         '''
+        neighbours = self.neighbours_list(cell)
+        return len([ x for x in neighbours if x.alive])
+    
+    def neighbours_list(self,cell) :
         neighbours_coords = self.neighbours(cell) 
-        neighbours_list = [ self.board[coords] for coords in neighbours_coords ]
-        return len([ x for x in neighbours_list if x.alive])
+        return [ self.board[coords] for coords in neighbours_coords ]
     
     def neighbours(self, cell):
         ''' Calculate the neighbouring cells' coords using toroidal coords
@@ -86,7 +90,7 @@ class InteractiveBoard(Board):
     '''
     
     def __init__(self, init='blank'):
-        self.paused = True
+        self.paused = False
         super(InteractiveBoard, self).__init__(init)
                 
     def pause_unpause(self):
@@ -98,19 +102,26 @@ class InteractiveBoard(Board):
     def update(self):
         if not self.paused:
             super(InteractiveBoard,self).update()
+            
+    def show(self,force=True):
+        if force or not self.paused:
+            super(InteractiveBoard,self).show()
         
     def switch_cell(self):
-        self.board[mouseCoords()].switch() 
+        self.board[mouseCoords()].switch()
+
 
 class RedInteractiveBoard(InteractiveBoard):
     def new_cell(self, x, y):
         return cells.RedCell(x,y)
+
     
 class TrackerBoard(InteractiveBoard):
     ''' Insert tracker cells by right-clicking,
         see their progeny live and die
     '''
     
+    random.seed(1)
     
     def new_cell(self, x, y):
         return cells.Tracker(x,y)
@@ -122,14 +133,13 @@ class TrackerBoard(InteractiveBoard):
             else : cell.tracker_birth()
         else:
             cell.switch()
+        cell.show()
 
     def tracker_neighbour(self, cell):
         ''' Returns true if one of the neighbouring cells
             is an alive tracker
         '''
-        neighbours_coords = self.neighbours(cell) 
-        neighbours_list = [ self.board[coords] for coords in neighbours_coords ]
-        for neighbour_cell in neighbours_list:
+        for neighbour_cell in self.neighbours_list(cell):
             if neighbour_cell.tracker :
                 return True
         else:
@@ -151,4 +161,4 @@ class TrackerBoard(InteractiveBoard):
         alive = self.alive_neighbours(cell)
         tracker = self.tracker_neighbour(cell)
         print( str(cell) + ' with {} alive neighbours.'.format(alive) )  
-        if tracker : print('TRACKER') 
+        if tracker : print('TRACKER')
