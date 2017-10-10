@@ -1,7 +1,3 @@
-# Consider adding interactivity
-# do some good super() heredity
-# Refactor both board and cell to make it possible to add tracker cells.
-
 
 # The rules of the Game of Life:
 rules = { 'birth' : (3,), 'death' : (0,1,4,5,6,7,8) }
