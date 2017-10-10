@@ -150,7 +150,7 @@ class TrackerBoard(ColourBoard):
         see their progeny live and die.
     '''
     
-    random.seed(1)
+    #random.seed(1)
     
     def new_cell(self, x, y):
         return cells.Tracker(x,y)
